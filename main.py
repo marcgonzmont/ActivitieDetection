@@ -1,6 +1,8 @@
 import argparse
+from myPackage import hmm
 from myPackage import tools as tl
 from myPackage import kmeansSelection as kms
+
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -16,7 +18,7 @@ if __name__ == '__main__':
     training_files = tl.natSort(tl.getFiles(args["training_path"]))
     test_files = tl.natSort(tl.getFiles(args["test_path"]))
     # Set to 1 if you want to see the clusters selection graphically
-    graphs = 1
+    graphs = 0
 
     substr_R = 'Derecha'
     substr_L = 'Izquierda'
@@ -28,5 +30,8 @@ if __name__ == '__main__':
     best_clusters_right = kms.usingSilhouette(training_data[0][0], graphs)
     print("\nSearching the best number of clusters for TEST...")
     best_clusters_left = kms.usingSilhouette(training_data[1][0], graphs)
+
+    # for num_clusters in best_clusters_right:
+    hmm.generateHMM(best_clusters_right, training_data[0][0])
 
 
