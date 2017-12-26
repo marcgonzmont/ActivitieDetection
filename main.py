@@ -1,5 +1,6 @@
 import argparse
 from myPackage import tools as tl
+from myPackage import kmeansSelection as kms
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -20,5 +21,6 @@ if __name__ == '__main__':
     training  = tl.splitFiles(training_files, substr_R, substr_L)
     test = tl.splitFiles(test_files, substr_R, substr_L)
     training_data = tl.getData(training)
-    print(len(training_data[0][0]))
-    print(training_data[0][0])
+    # print(len(training_data[0][0]))
+    # print(training_data[0][0][:,1])
+    kms.selectKmeans(training_data[0][0])
