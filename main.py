@@ -1,6 +1,5 @@
 import argparse
 from myPackage import tools as tl
-from os.path import isfile, join, sep
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -13,13 +12,13 @@ if __name__ == '__main__':
 
     args = vars(ap.parse_args())
 
-    right_ends = '*Derecha[0-9*].txt'
-    left_ends = '*Izquierda*.txt'
-    training_files = tl.natSort(tl.getSamples2(args["training_path"], right_ends))
-    test_files = tl.natSort(tl.getSamples(args["test_path"], left_ends))
-    print(training_files)
+    training_files = tl.natSort(tl.getFiles(args["training_path"]))
+    test_files = tl.natSort(tl.getFiles(args["test_path"]))
 
-    # import glob
-    #
-    # for name in glob.glob(sep.join((args["training_path"],'*Derecha*.txt'))):
-    #     print(name)
+    substr_R = 'Derecha'
+    substr_L = 'Izquierda'
+    training  = tl.splitFiles(training_files, substr_R, substr_L)
+    test = tl.splitFiles(test_files, substr_R, substr_L)
+    training_data = tl.getData(training)
+    print(len(training_data[0][0]))
+    print(training_data[0][0])

@@ -1,8 +1,7 @@
-from os.path import isfile, join, altsep, sep
-from os import listdir, makedirs, errno, rename
+from os.path import isfile, join, altsep
+from os import listdir, makedirs, errno
 from natsort import natsorted, ns
-import glob
-import fnmatch
+import numpy as np
 
 def makeDir(path):
     '''
@@ -26,11 +25,30 @@ def natSort(list):
     '''
     return natsorted(list, alg=ns.IGNORECASE)
 
-def getSamples(path, endsWith):
+def getFiles(path):
     samples = [altsep.join((path, f)) for f in listdir(path)
-              if glob(join(f,endsWith))]  #f.endswith(endsWith) and
+              if isfile(join(path, f)) and f.endswith('.txt')]
     return samples
 
-def getSamples2(path, endsWith):
-    samples = [f for f in glob.glob(join(path, endsWith))]
-    return samples
+def splitFiles(array, substr_R, substr_L):
+    right_array = [name for name in array if substr_R in name]
+    left_array = [name for name in array if substr_L in name]
+    other_array = [name for name in array if name not in right_array+left_array]
+    return right_array, left_array, other_array
+
+def getData(array):
+    data_right = []
+    data_left = []
+    data_other = []
+    for i in range(len(array)):
+        for file in array[i]:
+            if i == 0:
+                # print("Right")
+                data_right.append(np.genfromtxt(file, delimiter = ',', usecols= (-2, -1)))
+            elif i == 1:
+                # print("Left")
+                data_left.append(np.genfromtxt(file, delimiter =',', usecols=(-2, -1)))
+            elif i == 2:
+                # print("Other")
+                data_other.append(np.genfromtxt(file, delimiter =',', usecols=(-2, -1)))
+    return data_right, data_left, data_other
