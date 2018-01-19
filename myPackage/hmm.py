@@ -3,30 +3,26 @@ import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 
-def generateHMM(num_clusters, data):
-    print("Fitting to HMM and decoding ...")
+def train(num_clusters, labels):
+    print("\nFitting to HMM and decoding ...")
     # Make an HMM instance and execute fit
-    hmm_model = hmm.GaussianHMM(n_components= num_clusters[1], covariance_type= 'full', verbose= True, n_iter= 100, tol= 1e-4)
-    X = data
-    hmm_model.fit(X)
-    print("Convergence Monitor: \n{}\n".format(hmm_model.monitor_))
-    print("Converged: {}".format(hmm_model.monitor_.converged))
-    # Predict the optimal sequence of internal hidden state
-    hidden_states = hmm_model.predict(X)
 
-    # hmm.ConvergenceMonitor(history= [...], iter= 12, n_iter= 100, tol= 0.01, verbose= True)
-    print("DONE!")
 
-    # print(hmm_model.n_components)
-    print("\nTransition matrix\n{}".format(hmm_model.transmat_))
+    X = labels[num_clusters]
+    print(X)
+    X = np.array([X]).T
 
-    print("\nMeans and vars of each hidden state")
-    # for i in range(hmm_model.n_components):
-    #     print("{0}th hidden state\n"
-    #           "mean = {}\n"
-    #           "var = {}\n".format(i, hmm_model.means_[i], np.diag(hmm_model.covars_[i])))
-    for i in range(hmm_model.n_components):
-        print("{0}th hidden state".format(i))
-        print("mean = ", hmm_model.means_[i])
-        print("var = ", np.diag(hmm_model.covars_[i]))
-        print()
+    hmm_model = hmm.MultinomialHMM(n_components= num_clusters, verbose= False, n_iter= 100, tol= 1e-5)
+    hmm_model = hmm_model.fit(X)
+
+    return hmm_model
+
+
+def test(labels, hmm_model):
+    states = ["0", "1", "2", "3", "4"]
+    # states = states[:num_clusters]
+    logprob, sequence = hmm_model.decode(labels, algorithm="viterbi")
+    # print ("Bob says:" , ", ".join(map(lambda x: observations[x], bob_says.T[0])))
+    print("Sequence predicted:", ", ".join(map(lambda x: states[x], sequence)))
+    print("LogProb: ", logprob)
+    # np.random.dirichlet(np.ones(num_estados), size=1)

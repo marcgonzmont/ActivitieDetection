@@ -13,12 +13,13 @@ def usingSilhouette(array, graphs):
     X = array
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-    # print(X)
-    # print(y)
     range_n_clusters = range(2, 6)
     clusters_dict = {}
+    dic_km_labels = {}
+    model_dic = {}
 
     for n_clusters in range_n_clusters:
+        # print(idx)
         # Create a subplot with 1 row and 2 columns
         fig, (ax1, ax2) = plt.subplots(1, 2)
         fig.set_size_inches(13, 7)
@@ -33,8 +34,12 @@ def usingSilhouette(array, graphs):
 
         # Initialize the clusterer with n_clusters value and a random generator
         # seed of 10 for reproducibility.
-        clusterer = KMeans(n_clusters=n_clusters, random_state=10)
-        cluster_labels = clusterer.fit_predict(X_scaled)
+        km_model = KMeans(n_clusters=n_clusters, random_state=10, max_iter=300, tol=1e-4)
+        cluster_labels = km_model.fit_predict(X_scaled)
+        dic_km_labels[n_clusters] = cluster_labels
+        model_dic[n_clusters] = km_model
+        # print("--- LABELS ---\n"
+        #       "{}\n\n".format(cluster_labels))
 
         # The silhouette_score gives the average value for all the samples.
         # This gives a perspective into the density and separation of the formed
@@ -84,7 +89,7 @@ def usingSilhouette(array, graphs):
                         c=colors, edgecolor='k')
 
             # Labeling the clusters
-            centers = clusterer.cluster_centers_
+            centers = km_model.cluster_centers_
             # Draw white circles at cluster centers
             ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
                         c="white", alpha=1, s=200, edgecolor='k')
@@ -102,7 +107,33 @@ def usingSilhouette(array, graphs):
                          fontsize=14, fontweight='bold')
 
             plt.show()
+
+            # print("Best clusters: {}\n"
+            #       "So best labels are: \n"
+            #       "{}\n"
+            #       "{}\n".format(clusters_dict[0:2], km_labels[clusters_dict[0]], km_labels[clusters_dict[1]]))
+            #
+            # for key, val in labels_list.items():
+            #     print(key, "=>", val)
+
+
     clusters_dict = sorted(clusters_dict, key=clusters_dict.__getitem__, reverse= True)
-    print("The two best results are {} and {}\n".format(clusters_dict[0], clusters_dict[1]))
-    # print(clusters_dict[0:2])
-    return clusters_dict[0:2]
+    print("Best clusters: {}\n".format(clusters_dict[0:2]))
+    labels_list = {}
+    for i in range(2):
+        labels_list[clusters_dict[i]] = dic_km_labels[clusters_dict[i]]
+
+    best_models = {}
+    for i in range(2):
+        best_models[clusters_dict[i]] = model_dic[clusters_dict[i]]
+
+    return clusters_dict[0:2], labels_list, best_models
+
+
+def kmEvaluation(km_model, data):
+    X = data
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    cluster_labels = km_model.fit_predict(X_scaled)
+
+    return cluster_labels
