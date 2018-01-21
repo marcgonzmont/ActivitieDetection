@@ -34,7 +34,7 @@ def usingSilhouette(array, graphs):
 
         # Initialize the clusterer with n_clusters value and a random generator
         # seed of 10 for reproducibility.
-        km_model = KMeans(n_clusters=n_clusters, random_state=10, max_iter=300, tol=1e-4)
+        km_model = KMeans(n_clusters=n_clusters, n_init=15, max_iter=700, tol=1e-3)
         cluster_labels = km_model.fit_predict(X_scaled)
         dic_km_labels[n_clusters] = cluster_labels
         model_dic[n_clusters] = km_model
@@ -46,8 +46,9 @@ def usingSilhouette(array, graphs):
         # clusters
         silhouette_avg = silhouette_score(X_scaled, cluster_labels)
         clusters_dict[n_clusters] = silhouette_avg
-        print("For {} clusters the average silhouette_score is: {}".format( n_clusters, silhouette_avg))
         if graphs:
+            print("For {} clusters the average silhouette_score is: {}".format(n_clusters, silhouette_avg))
+
             # Compute the silhouette scores for each sample
             sample_silhouette_values = silhouette_samples(X_scaled, cluster_labels)
 
