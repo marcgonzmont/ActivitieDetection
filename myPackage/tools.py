@@ -3,6 +3,7 @@ from os import listdir, makedirs, errno
 from itertools import product
 from natsort import natsorted, ns
 from matplotlib import pyplot as plt
+from collections import defaultdict
 import numpy as np
 
 def makeDir(path):
@@ -40,23 +41,38 @@ def splitFiles(array, substr_R, substr_L):
 
 def getData(array, mode):
     if mode == 0:
-        data_right = np.empty((0,2), dtype="i8")
-        data_left = np.empty((0,2), dtype="i8")
-        data_other = np.empty((0,2), dtype="i8")
+        # data_right = np.empty((0,2), dtype="i8")
+        # data_left = np.empty((0,2), dtype="i8")
+        # data_other = np.empty((0,2), dtype="i8")
+        # for i in range(len(array)):
+        #     for file in array[i]:
+        #         if i == 0:
+        #             # print("Right")
+        #             # data_right.append(np.genfromtxt(file, delimiter = ',', usecols= (-2, -1), dtype="i8"))
+        #             data_right = np.concatenate([data_right, np.genfromtxt(file, delimiter = ',', usecols= (-2, -1), dtype="i8")])
+        #         elif i == 1:
+        #             # print("Left")
+        #             # data_left.append(np.genfromtxt(file, delimiter =',', usecols=(-2, -1), dtype="i8"))
+        #             data_left = np.concatenate([data_left, np.genfromtxt(file, delimiter=',', usecols=(-2, -1), dtype="i8")])
+        #         elif i == 2:
+        #             # print("Other")
+        #             # data_other.append(np.genfromtxt(file, delimiter =',', usecols=(-2, -1), dtype="i8"))
+        #             data_other = np.concatenate([data_other, np.genfromtxt(file, delimiter=',', usecols=(-2, -1), dtype="i8")])
+        data_right = []
+        data_left = []
+        data_other = []
         for i in range(len(array)):
             for file in array[i]:
                 if i == 0:
                     # print("Right")
-                    # data_right.append(np.genfromtxt(file, delimiter = ',', usecols= (-2, -1), dtype="i8"))
-                    data_right = np.concatenate([data_right, np.genfromtxt(file, delimiter = ',', usecols= (-2, -1), dtype="i8")])
+                    data_right.append(np.genfromtxt(file, delimiter=',', usecols=(-2, -1)))
                 elif i == 1:
                     # print("Left")
-                    # data_left.append(np.genfromtxt(file, delimiter =',', usecols=(-2, -1), dtype="i8"))
-                    data_left = np.concatenate([data_left, np.genfromtxt(file, delimiter=',', usecols=(-2, -1), dtype="i8")])
+                    data_left.append(np.genfromtxt(file, delimiter=',', usecols=(-2, -1)))
                 elif i == 2:
                     # print("Other")
-                    # data_other.append(np.genfromtxt(file, delimiter =',', usecols=(-2, -1), dtype="i8"))
-                    data_other = np.concatenate([data_other, np.genfromtxt(file, delimiter=',', usecols=(-2, -1), dtype="i8")])
+                    data_other.append(np.genfromtxt(file, delimiter=',', usecols=(-2, -1)))
+        # print(len(data_right),len(data_left), len(data_other))
     elif mode == 1:
         data_right = []
         data_left = []

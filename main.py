@@ -28,28 +28,38 @@ if __name__ == '__main__':
     test = tl.splitFiles(test_files, substr_R, substr_L)
     # print(len(test[0]), len(test[1]), len(test[2]))
     training_data = tl.getData(training, 0)
-    # print(len(training_data[0]))
+    # print(len(training_data[2]))
     test_data = tl.getData(test, 1)
     # print(len(test_data))
 
     print("\nSearching the best number of clusters for TRAINING (right)...\n")
-    num_clusters_right, dic_labels_right, km_model_dic_right = kms.usingSilhouette(training_data[0], graphs)
+    num_clusters_right, km_model_dic_right = kms.usingSilhouette(training_data[0], graphs)
     print("\nSearching the best number of clusters for TRAINING (left)...\n")
-    num_clusters_left, dic_labels_left, km_model_dic_left = kms.usingSilhouette(training_data[1], graphs)
+    num_clusters_left, km_model_dic_left = kms.usingSilhouette(training_data[1], graphs)
 
+    # print(len(dic_labels_right[2]))
     comb = [comb for comb in tl.product(num_clusters_right, num_clusters_left)]
     r = tl.np.repeat(class_names[0],len(test_data[0]))
     l = tl.np.repeat(class_names[1], len(test_data[1]))
     o = tl.np.repeat(class_names[2], len(test_data[2]))
     lab_test = tl.np.concatenate([r,l,o])
     lab_pred = tl.np.empty_like(lab_test)
-
+    n_comp = tl.np.arange(2, 15, 1)
     # Train the HMM model using each combination of #clusters
     for n_r, n_l in comb:
-        # Train the two HMM using #clusters for right and left
-        hmm_model_right = hmm.train(n_r, dic_labels_right)
-        hmm_model_left = hmm.train(n_l, dic_labels_left)
-        for pos in range(lab_test.size):
+        print("\nComputing K-means labels for TRAINING using {}-{} clusters (right, left)...".format(n_r, n_l))
+        labels_right = tl.np.empty_like(training_data[0])
+        labels_left = tl.np.empty_like(training_data[1])
+        for i in range(len(training_data[0])):
+            labels_right[i] = kms.kmEvaluation(km_model_dic_right[n_r], training_data[0][i])
+        for i in range(len(training_data[1])):
+            labels_left[i] = kms.kmEvaluation(km_model_dic_left[n_l], training_data[1][i])
+        for n_states in n_comp:
+            # Train the two HMM using #clusters for right and left
+            hmm_model_right = hmm.train(n_r, labels_right, n_states)
+            hmm_model_left = hmm.train(n_l, labels_left, n_states)
+            # for pos in range(lab_test.size):
+            pos = 0
             for dir in range(len(test_data)):
                 for idx in range(len(test_data[dir])):
                     # print("--- TRAINING AND TESTING HMM for all combinations---")
@@ -67,24 +77,27 @@ if __name__ == '__main__':
                     #       "LogProb left: {}\n".format(dir, idx, pos, n_r, n_l, logProb_r, logProb_l))
                     if logProb_r > logProb_l:
                         # print("1---", logProb_r / logProb_l, "\n")
-                        if abs(logProb_r-logProb_l) < 50:
+                        # if abs(logProb_r-logProb_l) < 35:
+                        if logProb_r / logProb_l > 0.90:
                             lab_pred[pos] = 'Other'
                         else:
                             lab_pred[pos] = 'Right'
                     elif logProb_r < logProb_l:
                         # print("2---",logProb_l/ logProb_r,"\n")
-                        if abs(logProb_r-logProb_l) < 50:
+                        # if abs(logProb_r-logProb_l) < 35:
+                        if logProb_l / logProb_r > 0.90:
                             lab_pred[pos] = 'Other'
                         else:
                             lab_pred[pos] = 'Left'
-        hits = 0
-        for t, p in zip(lab_test, lab_pred):
-            if t == p:
-                hits += 1
-        print("--- CLUSTERS {}-{}---\n"
-              "{}\n"
-              "{}\n"
-              "HITS: {}/{}\n".format(n_r, n_l, lab_test, lab_pred, hits, lab_test.size))
+                    pos += 1
+            hits = 0
+            for t, p in zip(lab_test, lab_pred):
+                if t == p:
+                    hits += 1
+            print("--- CLUSTERS {}-{} STATES {}---\n"
+                  "{}\n"
+                  "{}\n"
+                  "HITS: {}/{}\n".format(n_r, n_l, n_states, lab_test, lab_pred, hits, lab_test.size))
         # Check hits
 
         # Compute confusion matrix

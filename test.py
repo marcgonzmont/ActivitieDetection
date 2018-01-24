@@ -1,22 +1,11 @@
 import numpy as np
+from matplotlib import pyplot as plt
 from itertools import product
 
 
-x = ['Right']*3
-# print(x)
-y = ['Left']*5
-# print(y)
-z = ['Other']*2
-# print(z)
-comb = [comb for comb in product(x, z)]
-final = np.concatenate([x,y,z])
-test = np.empty_like(final)
-# print(final.size)
-# print(final)
-# print(test.shape)
-
-for i in range(final.size):
-    # test = np.concatenate([test, 'Right'])
-    test[i] = 'foo'
-    # print(i)
-print(test)
+n_iter = np.arange(10, 100, 10)
+hyper_params = {"n_iter": n_iter,
+                "tol": [1e-2, 1e-3, 1e-4],
+                "n_components": [4,5,6]}
+for i in hyper_params["n_components"]:
+    print(i)

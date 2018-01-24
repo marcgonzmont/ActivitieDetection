@@ -1,4 +1,5 @@
 from sklearn.cluster import KMeans
+from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_samples, silhouette_score
 
@@ -10,33 +11,32 @@ def usingSilhouette(array, graphs):
     # Generating the sample data from make_blobs
     # This particular setting has one distinct cluster and 3 clusters placed close
     # together.
-    X = array
+    # print("array lenght: ", len(array))
+    X = np.vstack(array)
+    # print("X shape: ", X.shape)
+    # X = array
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
+    # print("X shape: ", X.shape)
     range_n_clusters = range(2, 6)
     clusters_dict = {}
-    dic_km_labels = {}
+    # dic_km_labels = {}
     model_dic = {}
+    hyper_params = {"n_init": [2, 3, 4, 5, 6],
+                    "max_iter": [100, 200, 300, 400],
+                    "tol": [1e-2, 1e-3, 1e-4]}
+    # hyper_params = {"max_iter": [100, 200, 300, 400, 500, 600],
+    #                 "tol": [1e-2, 1e-3, 1e-4]}
 
     for n_clusters in range_n_clusters:
-        # print(idx)
-        # Create a subplot with 1 row and 2 columns
-        fig, (ax1, ax2) = plt.subplots(1, 2)
-        fig.set_size_inches(13, 7)
-
-        # The 1st subplot is the silhouette plot
-        # The silhouette coefficient can range from -1, 1 but in this example all
-        # lie within [-0.1, 1]
-        ax1.set_xlim([-0.1, 1])
-        # The (n_clusters+1)*10 is for inserting blank space between silhouette
-        # plots of individual clusters, to demarcate them clearly.
-        ax1.set_ylim([0, len(X_scaled) + (n_clusters + 1) * 10])
-
         # Initialize the clusterer with n_clusters value and a random generator
         # seed of 10 for reproducibility.
-        km_model = KMeans(n_clusters=n_clusters, n_init=15, max_iter=700, tol=1e-3)
-        cluster_labels = km_model.fit_predict(X_scaled)
-        dic_km_labels[n_clusters] = cluster_labels
+        km_model = KMeans(n_clusters=n_clusters)
+        ensemble = GridSearchCV(estimator= km_model, param_grid= hyper_params, cv= 5, n_jobs= -1)
+        cluster_labels = ensemble.fit(X_scaled).predict(X_scaled)
+
+        # model_dic[n_clusters] = km_model
+        km_model = ensemble.best_estimator_
         model_dic[n_clusters] = km_model
         # print("--- LABELS ---\n"
         #       "{}\n\n".format(cluster_labels))
@@ -45,8 +45,24 @@ def usingSilhouette(array, graphs):
         # This gives a perspective into the density and separation of the formed
         # clusters
         silhouette_avg = silhouette_score(X_scaled, cluster_labels)
+        print(n_clusters, ensemble.best_params_, silhouette_avg)
         clusters_dict[n_clusters] = silhouette_avg
         if graphs:
+            print("Number of clusters: {}\n"
+                  "Silhouette score: {}\n"
+                  "Best params: {}\n".format(n_clusters, silhouette_avg, ensemble.best_params_))
+            # Create a subplot with 1 row and 2 columns
+            fig, (ax1, ax2) = plt.subplots(1, 2)
+            fig.set_size_inches(13, 7)
+
+            # The 1st subplot is the silhouette plot
+            # The silhouette coefficient can range from -1, 1 but in this example all
+            # lie within [-0.1, 1]
+            ax1.set_xlim([-0.1, 1])
+            # The (n_clusters+1)*10 is for inserting blank space between silhouette
+            # plots of individual clusters, to demarcate them clearly.
+            ax1.set_ylim([0, len(X_scaled) + (n_clusters + 1) * 10])
+
             print("For {} clusters the average silhouette_score is: {}".format(n_clusters, silhouette_avg))
 
             # Compute the silhouette scores for each sample
@@ -109,26 +125,17 @@ def usingSilhouette(array, graphs):
 
             plt.show()
 
-            # print("Best clusters: {}\n"
-            #       "So best labels are: \n"
-            #       "{}\n"
-            #       "{}\n".format(clusters_dict[0:2], km_labels[clusters_dict[0]], km_labels[clusters_dict[1]]))
-            #
-            # for key, val in labels_list.items():
-            #     print(key, "=>", val)
-
-
     clusters_dict = sorted(clusters_dict, key=clusters_dict.__getitem__, reverse= True)
     print("Best clusters: {}\n".format(clusters_dict[0:2]))
-    labels_list = {}
-    for i in range(2):
-        labels_list[clusters_dict[i]] = dic_km_labels[clusters_dict[i]]
+    # labels_list = {}
+    # for i in range(2):
+    #     labels_list[clusters_dict[i]] = dic_km_labels[clusters_dict[i]]
 
     best_models = {}
     for i in range(2):
         best_models[clusters_dict[i]] = model_dic[clusters_dict[i]]
 
-    return clusters_dict[0:2], labels_list, best_models
+    return clusters_dict[0:2], best_models
 
 
 def kmEvaluation(km_model, data):
