@@ -1,0 +1,149 @@
+Searching the best number of clusters for TRAINING (right)...
+
+# Clusters: 2
+Best params: {'max_iter': 200, 'n_init': 6, 'tol': 0.001}
+Silhouette avg: 0.5288688778820505
+
+# Clusters: 3
+Best params: {'max_iter': 200, 'n_init': 10, 'tol': 0.001}
+Silhouette avg: 0.5185953109576846
+
+# Clusters: 4
+Best params: {'max_iter': 100, 'n_init': 8, 'tol': 0.001}
+Silhouette avg: 0.4855946384151937
+
+# Clusters: 5
+Best params: {'max_iter': 100, 'n_init': 8, 'tol': 0.001}
+Silhouette avg: 0.4565338604219943
+
+# Clusters: 6
+Best params: {'max_iter': 100, 'n_init': 6, 'tol': 0.0001}
+Silhouette avg: 0.41656189937390364
+
+# Clusters: 7
+Best params: {'max_iter': 300, 'n_init': 6, 'tol': 1e-05}
+Silhouette avg: 0.4025107406129504
+
+Best number of clusters: [7, 6]
+
+
+Searching the best number of clusters for TRAINING (left)...
+
+# Clusters: 2
+Best params: {'max_iter': 100, 'n_init': 6, 'tol': 0.0001}
+Silhouette avg: 0.5041389518040844
+
+# Clusters: 3
+Best params: {'max_iter': 200, 'n_init': 8, 'tol': 0.001}
+Silhouette avg: 0.5083685123943401
+
+# Clusters: 4
+Best params: {'max_iter': 300, 'n_init': 10, 'tol': 0.001}
+Silhouette avg: 0.516751065984288
+
+# Clusters: 5
+Best params: {'max_iter': 300, 'n_init': 6, 'tol': 1e-05}
+Silhouette avg: 0.49286327401709845
+
+# Clusters: 6
+Best params: {'max_iter': 100, 'n_init': 8, 'tol': 0.001}
+Silhouette avg: 0.4565168247868347
+
+# Clusters: 7
+Best params: {'max_iter': 400, 'n_init': 10, 'tol': 0.001}
+Silhouette avg: 0.438326612035743
+
+Best number of clusters: [7, 6]
+
+
+Computing K-means labels for TRAINING using 7-7 clusters (right, left)...
+Best params for 7 clusters:
+{'n_iter': 30, 'tol': 0.01}
+Convergence for '7' clusters? True
+
+
+Best params for 7 clusters:
+{'n_iter': 30, 'tol': 0.0001}
+Convergence for '7' clusters? True
+
+--- CLUSTERS 7-7 ---
+['Right' 'Right' 'Right' 'Right' 'Left' 'Left' 'Left' 'Left' 'Other'
+ 'Other' 'Other' 'Other' 'Other']
+['Left' 'Other' 'Left' 'Other' 'Other' 'Left' 'Other' 'Left' 'Other'
+ 'Other' 'Other' 'Other' 'Other']
+
+HITS: 7/13 (accuracy: 53.846%)
+
+Normalized confusion matrix
+[[0.5 0.5 0. ]
+ [0.  1.  0. ]
+ [0.5 0.5 0. ]]
+
+
+Computing K-means labels for TRAINING using 7-6 clusters (right, left)...
+Best params for 7 clusters:
+{'n_iter': 30, 'tol': 0.0001}
+Convergence for '7' clusters? True
+
+Best params for 6 clusters:
+{'n_iter': 30, 'tol': 0.0001}
+Convergence for '6' clusters? True
+
+--- CLUSTERS 7-6 ---
+['Right' 'Right' 'Right' 'Right' 'Left' 'Left' 'Left' 'Left' 'Other'
+ 'Other' 'Other' 'Other' 'Other']
+['Left' 'Left' 'Left' 'Left' 'Left' 'Left' 'Other' 'Left' 'Other' 'Left'
+ 'Other' 'Left' 'Left']
+
+HITS: 5/13 (accuracy: 38.462%)
+
+Normalized confusion matrix
+[[0.75 0.25 0.  ]
+ [0.6  0.4  0.  ]
+ [1.   0.   0.  ]]
+
+
+Computing K-means labels for TRAINING using 6-7 clusters (right, left)...
+Best params for 6 clusters:
+{'n_iter': 30, 'tol': 0.0001}
+Convergence for '6' clusters? True
+
+Best params for 7 clusters:
+{'n_iter': 20, 'tol': 0.0001}
+Convergence for '7' clusters? True
+
+--- CLUSTERS 6-7 ---
+['Right' 'Right' 'Right' 'Right' 'Left' 'Left' 'Left' 'Left' 'Other'
+ 'Other' 'Other' 'Other' 'Other']
+['Right' 'Right' 'Right' 'Right' 'Right' 'Right' 'Other' 'Right' 'Other'
+ 'Other' 'Other' 'Right' 'Right']
+
+HITS: 7/13 (accuracy: 53.846%)
+
+Normalized confusion matrix
+[[0.   0.25 0.75]
+ [0.   0.6  0.4 ]
+ [0.   0.   1.  ]]
+
+Computing K-means labels for TRAINING using 6-6 clusters (right, left)...
+Best params for 6 clusters:
+{'n_iter': 30, 'tol': 0.01}
+Convergence for '6' clusters? True
+
+Best params for 6 clusters:
+{'n_iter': 30, 'tol': 0.001}
+Convergence for '6' clusters? True
+
+--- CLUSTERS 6-6 ---
+['Right' 'Right' 'Right' 'Right' 'Left' 'Left' 'Left' 'Left' 'Other'
+ 'Other' 'Other' 'Other' 'Other']
+['Right' 'Other' 'Right' 'Other' 'Other' 'Other' 'Other' 'Left' 'Other'
+ 'Other' 'Other' 'Other' 'Other']
+
+HITS: 8/13 (accuracy: 61.538%)
+
+Normalized confusion matrix
+[[0.25 0.75 0.  ]
+ [0.   1.   0.  ]
+ [0.   0.5  0.5 ]]
+
